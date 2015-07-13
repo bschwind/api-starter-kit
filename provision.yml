@@ -28,6 +28,13 @@
     npm: path=/home/vagrant/starter-kit
     sudo: no
 
+  - name: Remove default nginx config
+    sudo: yes
+    file:
+      path: "/etc/nginx/sites-enabled/default"
+      state: absent
+    notify: restart nginx
+
   - name: Copy over nginx-config
     sudo: yes
     template: dest=/etc/nginx/sites-enabled src=config/nginx-config group=root owner=root mode=644
@@ -35,4 +42,5 @@
 
   handlers:
     - name: restart nginx
-      service: name=nginx state=restarted
+      sudo: yes
+      command: nginx -s reload
