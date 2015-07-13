@@ -1,0 +1,38 @@
+- hosts: all
+  tasks:
+  - name: Upgrade packages
+    sudo: yes
+    apt: update_cache=yes upgrade=yes
+
+  - name: Install git
+    sudo: yes
+    apt: name=git
+
+  - name: Install nginx
+    sudo: yes
+    apt: name=nginx
+
+  - name: Install NodeJS
+    sudo: yes
+    apt: name=nodejs
+
+  - name: Install NPM
+    sudo: yes
+    apt: name=npm
+
+  - name: Make symlink to node
+    sudo: yes
+    file: path=/usr/bin/node src=/usr/bin/nodejs state=link
+
+  - name: npm install (api-starter-kit)
+    npm: path=/home/vagrant/starter-kit
+    sudo: no
+
+  - name: Copy over nginx-config
+    sudo: yes
+    template: dest=/etc/nginx/sites-enabled src=config/nginx-config group=root owner=root mode=644
+    notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
