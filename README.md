@@ -20,6 +20,8 @@ Run
     $ cd starter-kit
     $ node app.js
 
+Visit `http://localhost:8080/api/v1/ping` in your browser. If everything is running, you should get PONG as a response.
+
 I currently don't have any fancy auto-running tools for Node, as this is for
 development, and most tools that reload on code changes seem to perform slowly
 on VirtualBox VMs.
