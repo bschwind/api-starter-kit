@@ -1,4 +1,9 @@
 - hosts: all
+  vars:
+    db_name: "starter-kit"
+    db_user: "node"
+    db_user_password: "devPassword"
+
   tasks:
   - name: Upgrade packages
     sudo: yes
@@ -12,6 +17,15 @@
     sudo: yes
     apt: name=nginx
 
+  - name: Install PostgreSQL
+    sudo: yes
+    apt: pkg={{item}}
+    with_items:
+    - postgresql
+    - postgresql-contrib
+    - libpq-dev # Needed for postgresql_db ansible commands
+    - python-psycopg2 # Needed for postgresql_db ansible commands
+
   - name: Install NodeJS
     sudo: yes
     apt: name=nodejs
@@ -19,6 +33,25 @@
   - name: Install NPM
     sudo: yes
     apt: name=npm
+
+  - name: Create database
+    sudo: yes
+    sudo_user: postgres
+    postgresql_db: name={{db_name}}
+
+  - name: Create user for database
+    sudo: yes
+    sudo_user: postgres
+    postgresql_user: db={{db_name}} name={{db_user}} password={{db_user_password}} priv=ALL
+
+  - name: Ensure user does not have unnecessary privileges
+    sudo: yes
+    sudo_user: postgres
+    postgresql_user: name={{db_user}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+  - name: Create PostgreSQL tables
+    sudo: yes
+    shell: cat /home/vagrant/starter-kit/sql/create.sql | PGPASSWORD={{db_user_password}} psql -d {{db_name}} -U {{db_user}} -w -h localhost
 
   - name: Make symlink to node
     sudo: yes
