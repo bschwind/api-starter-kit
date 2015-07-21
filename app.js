@@ -12,6 +12,7 @@ var bodyParser = require("body-parser");
 
 // Controllers
 var statusController = require("controllers/statusController");
+var authController = require("controllers/authController");
 
 // Services
 
@@ -24,6 +25,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set up routes
 app.get("/api/v1/ping", statusController.ping);
+app.post("/api/v1/auth/signup", authController.signup);
+app.post("/api/v1/auth/login", authController.login);
+app.post("/api/v1/auth/logout", authController.logout);
+app.post("/api/v1/auth/update", authController.update);
 
 // Start the server
 var server = app.listen(3000, function () {
