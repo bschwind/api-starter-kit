@@ -1,10 +1,19 @@
 - hosts: all
-  vars:
-    db_name: "starter-kit"
-    db_user: "node"
-    db_user_password: "devPassword"
 
   tasks:
+  - name: Include external secret variables
+    include_vars: config/envSecrets.yml
+
+  - name: Add environment variables for secrets
+    sudo: yes
+    blockinfile:
+      dest: /home/vagrant/.bashrc
+      insertafter: "EOF"
+      content: |
+        export DB_NAME={{db_name}}
+        export DB_USER={{db_user}}
+        export DB_PASSWORD={{db_password}}
+
   - name: Upgrade packages
     sudo: yes
     apt: update_cache=yes upgrade=yes
@@ -42,7 +51,7 @@
   - name: Create user for database
     sudo: yes
     sudo_user: postgres
-    postgresql_user: db={{db_name}} name={{db_user}} password={{db_user_password}} priv=ALL
+    postgresql_user: db={{db_name}} name={{db_user}} password={{db_password}} priv=ALL
 
   - name: Ensure user does not have unnecessary privileges
     sudo: yes
@@ -51,7 +60,7 @@
 
   - name: Create PostgreSQL tables
     sudo: yes
-    shell: cat /home/vagrant/starter-kit/sql/create.sql | PGPASSWORD={{db_user_password}} psql -d {{db_name}} -U {{db_user}} -w -h localhost
+    shell: cat /home/vagrant/starter-kit/sql/create.sql | PGPASSWORD={{db_password}} psql -d {{db_name}} -U {{db_user}} -w -h localhost
 
   - name: Make symlink to node
     sudo: yes
