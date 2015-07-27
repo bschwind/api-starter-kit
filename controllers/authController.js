@@ -1,31 +1,83 @@
 "use strict";
 
+var Promise = require("bluebird");
+var config = require("config/config");
 var validation = require("services/validation");
+var bcrypt = require("bcrypt");
+var hashPromise = Promise.promisify(bcrypt.hash);
+var db = require("db");
 
 var authController = {};
+
+function UserAlreadyExistsError() {}
+UserAlreadyExistsError.prototype = Object.create(Error.prototype);
+
+function PasswordsNotEqualError() {}
+PasswordsNotEqualError.prototype = Object.create(Error.prototype);
 
 authController.signup = function (req, res) {
 	var data = {};
 
 	validation.run(req, {
 		username: [validation.required, validation.minMaxLength(3, 20), validation.isAscii],
-		password: [validation.required, validation.minMaxLength(8, 1024)],
+		password: [validation.required, validation.minMaxLength(8, 4096)],
 		passwordVerify: [validation.required],
 		email: [validation.isEmail]
 	})
 	.then(function (fields) {
-		console.log(fields);
-		// fields.email and fields.training_results are guaranteed to be here
-		// fields.some_int_field might be undefined since it's not required
-		res.send("Hello " + fields.email);
+		if (fields.password !== fields.passwordVerify) {
+			throw new PasswordsNotEqualError();
+		}
+
+		return [
+			db("users").select("id")
+			.where({
+				username: fields.username
+			}).limit(1),
+			fields
+		];
 	})
-	.catch(validation.ValidationError, function(err) {
+	.spread(function (existingUser, fields) {
+		if (existingUser.length > 0) {
+			throw new UserAlreadyExistsError();
+		}
+
+		return [hashPromise(fields.password, config.bcrypt.cost), fields];
+	})
+	.spread(function (hashedPassword, fields) {
+		return db("users").insert({
+			username: fields.username,
+			password: hashedPassword,
+			email: fields.email
+		});
+	})
+	.then(function () {
+		data.message_code = 4;
+		data.message = "Successful registration";
+		res.status(200).json(data);
+	})
+	.catch(validation.ValidationError, function (err) {
 		data.message_code = 1;
 		data.message = "Invalid data";
 		data.errors = err.messages;
-		// One of the fields is invalid. You could attach more information on the error object
 		res.status(400).json(data);
 	})
+	.catch(PasswordsNotEqualError, function (err) {
+		data.message_code = 2;
+		data.message = "Passwords do not match";
+		res.status(400).json(data);
+	})
+	.catch(UserAlreadyExistsError, function (err) {
+		data.message_code = 3;
+		data.message = "Username already taken";
+		res.status(400).json(data);
+	})
+	.catch(function (err) {
+		console.log(err);
+		data.message_code = 500;
+		data.message = "Internal server error";
+		res.status(500).json(data);
+	});
 };
 
 authController.login = function (req, res) {
