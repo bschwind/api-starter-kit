@@ -42,6 +42,7 @@ deploy:
         code: |
           sudo apt-get update
           sudo apt-get install -y ansible
+          sudo apt-get install -y git
 
           # Set up TerraForm
           sudo apt-get install -y wget
