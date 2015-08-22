@@ -34,6 +34,19 @@ build:
         name: Show apt-get version
         code: |
           sudo apt-get --version
+          sudo apt-get install -y ansible
+
+          # Set up TerraForm
+          sudo apt-get install -y wget
+          wget https://dl.bintray.com/mitchellh/terraform/terraform_0.6.3_linux_amd64.zip
+          mkdir tform
+          mv terraform_0.6.3_linux_amd64.zip ./tform
+          unzip ./tform/terraform_0.6.3_linux_amd64.zip
+          export PATH=`pwd`/tform/:$PATH
+
+          # Make sure TerraForm and Ansible are good
+          terraform --version
+          ansible --version
 
 deploy:
   steps:
@@ -41,4 +54,5 @@ deploy:
       name: Echo environment variables
       code: |
         env
-        ls
+        terraform --version
+        ansible --version
