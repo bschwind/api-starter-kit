@@ -42,9 +42,10 @@ build:
           wget https://dl.bintray.com/mitchellh/terraform/terraform_0.6.3_linux_amd64.zip
           mkdir tform
           mv terraform_0.6.3_linux_amd64.zip ./tform
-          unzip ./tform/terraform_0.6.3_linux_amd64.zip
+          unzip ./tform/terraform_0.6.3_linux_amd64.zip -d ./tform/
           # This is so dumb, but it pleases wercker's YAML parser
-          eval "export PATH=\"${PWD}/tform/:$PATH\""
+          # eval "export PATH=\"${PWD}/tform/:$PATH\""
+          export PATH=${PWD}/tform/:$PATH
 
           # Make sure TerraForm and Ansible are good
           terraform --version
