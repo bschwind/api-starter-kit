@@ -14,7 +14,9 @@ if git diff --exit-code --quiet terraform.tfstate ; then
     echo "Not committing terraform.tfstate, nothing changed"
 else
     echo "terraform.tfstate changed - committing"
+    git status
     git add terraform.tfstate
     git commit -m "Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY"
-    git push -v $GIT_REMOTE
+    git status
+    git push -v $GIT_REMOTE $WERCKER_GIT_BRANCH
 fi
