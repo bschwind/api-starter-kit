@@ -29,5 +29,5 @@ on VirtualBox VMs.
 Debug
 -----
 
-Run the PostgreSQL shell:
+    # Run the PostgreSQL shell:
     $ psql -d DB_NAME -h DB_HOSTNAME -U DB_USERNAME
