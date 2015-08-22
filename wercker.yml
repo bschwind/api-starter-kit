@@ -41,3 +41,4 @@ deploy:
       name: Echo environment variables
       code: |
         env
+        ls
