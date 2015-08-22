@@ -34,3 +34,4 @@ build:
         name: echo nodejs information
         code: |
           sudo apt-get --version
+          env
