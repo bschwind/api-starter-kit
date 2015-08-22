@@ -43,7 +43,7 @@ build:
           mkdir tform
           mv terraform_0.6.3_linux_amd64.zip ./tform
           unzip ./tform/terraform_0.6.3_linux_amd64.zip
-          "export PATH=`pwd`/tform/:$PATH"
+          export PATH="`pwd`/tform/:$PATH"
 
           # Make sure TerraForm and Ansible are good
           terraform --version
