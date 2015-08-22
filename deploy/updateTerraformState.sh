@@ -16,5 +16,5 @@ else
     echo "terraform.tfstate changed - committing"
     git add terraform.tfstate
     git commit -m "Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY"
-    git push $GIT_REMOTE $WERCKER_GIT_BRANCH
+    git push -v $GIT_REMOTE
 fi
