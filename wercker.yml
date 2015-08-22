@@ -59,4 +59,5 @@ deploy:
     - script:
         name: Run Terraform
         code: |
+          env
           terraform plan
