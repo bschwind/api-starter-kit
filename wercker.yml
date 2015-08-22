@@ -38,6 +38,7 @@ build:
 
           # Set up TerraForm
           sudo apt-get install -y wget
+          sudo apt-get install -y unzip
           wget https://dl.bintray.com/mitchellh/terraform/terraform_0.6.3_linux_amd64.zip
           mkdir tform
           mv terraform_0.6.3_linux_amd64.zip ./tform
