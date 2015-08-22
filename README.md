@@ -25,3 +25,9 @@ Visit `http://localhost:8080/api/v1/ping` in your browser. If everything is runn
 I currently don't have any fancy auto-running tools for Node, as this is for
 development, and most tools that reload on code changes seem to perform slowly
 on VirtualBox VMs.
+
+Debug
+-----
+
+Run the PostgreSQL shell:
+    $ psql -d DB_NAME -h DB_HOSTNAME -U DB_USERNAME
