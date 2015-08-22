@@ -33,7 +33,7 @@ build:
     - script:
         name: Show apt-get version
         code: |
-          sudo apt-get --version
+          sudo apt-get update
           sudo apt-get install -y ansible
 
           # Set up TerraForm
