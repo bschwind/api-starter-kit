@@ -60,7 +60,7 @@ deploy:
     - script:
         name: Run Terraform
         code: |
-          terraform apply -refresh=false \
+          terraform apply \
                     -var "access_key=$AWS_ACCESS_KEY" \
                     -var "secret_key=$AWS_SECRET_KEY" \
                     -var "s3_bucket=$AWS_S3_BUCKET"
