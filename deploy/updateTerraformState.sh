@@ -19,5 +19,8 @@ else
     echo "Committing with message: Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY [ci skip]"
     git commit -m "Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY [ci skip]"
     git status
+
+    # Show last 3 commits
+    git log -n 3
     git push -v $GIT_REMOTE HEAD:$WERCKER_GIT_BRANCH
 fi
