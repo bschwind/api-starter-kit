@@ -7,7 +7,7 @@
   - name: Add environment variables for secrets
     sudo: yes
     blockinfile:
-      dest: /home/vagrant/.bashrc
+      dest: /home/{{ansible_user_id}}/.bashrc
       insertafter: "EOF"
       content: |
         export DB_NAME={{db_name}}
@@ -43,6 +43,14 @@
     sudo: yes
     apt: name=npm
 
+  - name: git clone api-starter-kit
+    git:
+      repo: https://github.com/bschwind/api-starter-kit.git
+      dest: /home/{{ansible_user_id}}/starter-kit
+      accept_hostkey: true
+    sudo: no
+    when: ansible_user_id != "vagrant" # Don't clone in a dev environment
+
   - name: Create database
     sudo: yes
     sudo_user: postgres
@@ -60,14 +68,14 @@
 
   - name: Create PostgreSQL tables
     sudo: yes
-    shell: cat /home/vagrant/starter-kit/sql/create.sql | PGPASSWORD={{db_password}} psql -d {{db_name}} -U {{db_user}} -w -h localhost
+    shell: cat /home/{{ansible_user_id}}/starter-kit/sql/create.sql | PGPASSWORD={{db_password}} psql -d {{db_name}} -U {{db_user}} -w -h localhost
 
   - name: Make symlink to node
     sudo: yes
     file: path=/usr/bin/node src=/usr/bin/nodejs state=link
 
   - name: npm install (api-starter-kit)
-    npm: path=/home/vagrant/starter-kit
+    npm: path=/home/{{ansible_user_id}}/starter-kit
     sudo: no
 
   - name: Remove default nginx config
