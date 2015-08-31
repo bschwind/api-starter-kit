@@ -63,7 +63,9 @@ deploy:
           terraform apply \
                     -var "access_key=$AWS_ACCESS_KEY" \
                     -var "secret_key=$AWS_SECRET_KEY" \
-                    -var "s3_bucket=$AWS_S3_BUCKET"
+                    -var "s3_bucket=$AWS_S3_BUCKET" \
+                    -var "public_deploy_key=$SSH_KEY_PUBLIC" \
+                    -var "public_deploy_key_name=$PUBLIC_DEPLOY_KEY_NAME"
           ./deploy/updateTerraformState.sh
 
     # - add-ssh-key:
