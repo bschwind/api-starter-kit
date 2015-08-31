@@ -65,3 +65,8 @@ deploy:
                     -var "secret_key=$AWS_SECRET_KEY" \
                     -var "s3_bucket=$AWS_S3_BUCKET"
           ./deploy/updateTerraformState.sh
+
+    - script:
+        name: Run Ansible
+        code: |
+          terraform output dns

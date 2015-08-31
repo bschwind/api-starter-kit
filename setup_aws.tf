@@ -17,3 +17,7 @@ resource "aws_instance" "api-starter-kit-dev" {
         command = "ansible --version"
     }
 }
+
+output "dns" {
+    value = "${aws_instance.api-starter-kit-dev.primary.attributes.public_dns}"
+}
