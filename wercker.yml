@@ -63,15 +63,37 @@ deploy:
           terraform apply \
                     -var "access_key=$AWS_ACCESS_KEY" \
                     -var "secret_key=$AWS_SECRET_KEY" \
-                    -var "s3_bucket=$AWS_S3_BUCKET" \
-                    -var "public_deploy_key=$SSH_KEY_PUBLIC" \
-                    -var "public_deploy_key_name=$PUBLIC_DEPLOY_KEY_NAME"
+                    -var "s3_bucket=$AWS_S3_BUCKET"
           ./deploy/updateTerraformState.sh
 
-    # - add-ssh-key:
-    #     keyname: SSH_PRIVATE_KEY
+    - script:
+        name: Get EC2 DNS
+        code: |
+          export INSTANCE_DNS=`terrform output dns`
+
+    - add-to-known_hosts:
+        hostname: $INSTANCE_DNS
+    - mktemp:
+        envvar: PRIVATEKEY_PATH
+    - create-file:
+        name: Write key
+        filename: $PRIVATEKEY_PATH
+        content: $AWS_SSH_PEM_FILE
+        overwrite: true
+    - script:
+        name: Create /etc/ansible
+        code: |
+          sudo mkdir -p /etc/ansible
+          sudo chmod 777 /etc/ansible
+    - create-file:
+        name: create host file for ansible
+        filename: /etc/ansible/hosts
+        content: $INSTANCE_DNS
+        overwrite: true
 
     - script:
-        name: Run Ansible
+        name: run ansible
         code: |
-          terraform output dns
+          chmod 400 $PRIVATEKEY_PATH
+          cd deployment
+          ansible-playbook provision.yml --private-key=$PRIVATEKEY_PATH --extra-vars "source_location=$REMOTE_SOURCE_DIR source_location_auto_remove=true hostname=$HOSTNAME"
