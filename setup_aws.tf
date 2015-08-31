@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name = "${public_deploy_key_name}"
+  key_name = "${var.public_deploy_key_name}"
   public_key = "${var.public_deploy_key}"
 }
 
