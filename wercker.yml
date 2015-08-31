@@ -101,4 +101,4 @@ deploy:
         name: run ansible
         code: |
           chmod 400 $PRIVATEKEY_PATH
-          ansible-playbook provision.yml --private-key=$PRIVATEKEY_PATH --extra-vars "source_location=$REMOTE_SOURCE_DIR source_location_auto_remove=true hostname=$HOSTNAME"
+          ansible-playbook provision.yml --private-key=$PRIVATEKEY_PATH --extra-vars "source_location=$REMOTE_SOURCE_DIR source_location_auto_remove=true hostname=$INSTANCE_DNS"
