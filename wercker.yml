@@ -69,7 +69,7 @@ deploy:
     - script:
         name: Get EC2 DNS
         code: |
-          export INSTANCE_DNS=`terrform output dns`
+          export INSTANCE_DNS=`terraform output dns`
           echo $INSTANCE_DNS
 
     - script:
