@@ -12,6 +12,7 @@ resource "aws_s3_bucket" "bucket" {
 resource "aws_instance" "api-starter-kit-dev" {
     ami = "ami-936d9d93"
     instance_type = "t2.micro"
+    key-name = "api-starter-kit-dev"
 
     provisioner "local-exec" {
         command = "ansible --version"

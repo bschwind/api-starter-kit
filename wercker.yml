@@ -66,6 +66,9 @@ deploy:
                     -var "s3_bucket=$AWS_S3_BUCKET"
           ./deploy/updateTerraformState.sh
 
+    # - add-ssh-key:
+    #     keyname: SSH_PRIVATE_KEY
+
     - script:
         name: Run Ansible
         code: |
