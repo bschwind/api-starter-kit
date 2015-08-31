@@ -70,6 +70,12 @@ deploy:
         name: Get EC2 DNS
         code: |
           export INSTANCE_DNS=`terrform output dns`
+          echo $INSTANCE_DNS
+
+    - script:
+        name: Echo EC2 DNS
+        code: |
+          echo $INSTANCE_DNS
 
     - add-to-known_hosts:
         hostname: $INSTANCE_DNS
