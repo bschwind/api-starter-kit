@@ -82,6 +82,7 @@ deploy:
         name: Write key
         filename: $PRIVATEKEY_PATH
         content: $AWS_SSH_PEM_FILE
+        hide-from-log: true
         overwrite: true
     - script:
         name: Create /etc/ansible
