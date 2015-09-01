@@ -15,7 +15,6 @@ if git diff --exit-code --quiet terraform.tfstate ; then
 else
     echo "terraform.tfstate changed - committing"
     git pull --ff-only origin $WERCKER_GIT_BRANCH
-    git status
     git add terraform.tfstate
     echo "Committing with message: Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY [ci skip]"
     git commit -m "Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY [ci skip]"
