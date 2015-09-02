@@ -99,4 +99,4 @@ deploy:
         name: run ansible
         code: |
           chmod 400 $PRIVATEKEY_PATH
-          ansible-playbook provision.yml --user=ubuntu --private-key=$PRIVATEKEY_PATH --extra-vars "key=value"
+          ansible-playbook provision.yml --user=ubuntu --private-key=$PRIVATEKEY_PATH --extra-vars "deploy_env=$DEPLOY_ENV"

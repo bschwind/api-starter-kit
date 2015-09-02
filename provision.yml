@@ -1,8 +1,11 @@
 - hosts: all
+  vars_files:
+  - "deploy/ansible/common/secrets.yml"
+  - "deploy/ansible/common/non-secrets.yml"
+  - "deploy/ansible/{{deploy_env}}/secrets.yml"
+  - "deploy/ansible/{{deploy_env}}/non-secrets.yml"
 
   tasks:
-  - name: Include external secret variables
-    include_vars: config/envSecrets.yml
 
   - name: Add environment variables for secrets
     sudo: yes
@@ -10,9 +13,12 @@
       dest: /home/{{ansible_user_id}}/.bashrc
       insertafter: "EOF"
       content: |
+        export AWS_ACCESS_KEY={{aws_access_key}}
+        export AWS_SECRET_KEY={{aws_secret_key}}
         export DB_NAME={{db_name}}
         export DB_USER={{db_user}}
         export DB_PASSWORD={{db_password}}
+        export AWS_S3_BUCKET={{aws_s3_bucket}}
 
   - name: Upgrade packages
     sudo: yes
