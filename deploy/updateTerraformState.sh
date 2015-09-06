@@ -8,6 +8,13 @@ fi
 
 git config --global user.email pleasemailus@wercker.com
 git config --global user.name "wercker"
+
+export GITHUB_PUSH_KEY_PATH=`mktemp`
+privateKey=$(eval echo "\$${GITHUB_PUSH_KEY}_PRIVATE")
+echo -e "$privateKey" > $GITHUB_PUSH_KEY_PATH
+eval `ssh-agent -s`
+ssh-add $GITHUB_PUSH_KEY_PATH
+
 echo "configured git"
 
 if git diff --exit-code --quiet terraform.tfstate ; then
