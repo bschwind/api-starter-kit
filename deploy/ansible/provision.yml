@@ -59,7 +59,7 @@
     npm: name=pm2 global=yes
     sudo: yes
 
-  - name: git clone api-starter-kit
+  - name: Git clone api-starter-kit
     git:
       repo: https://github.com/bschwind/api-starter-kit.git
       dest: /home/{{ansible_user_id}}/starter-kit
@@ -90,7 +90,7 @@
     sudo: yes
     file: path=/usr/bin/node src=/usr/bin/nodejs state=link
 
-  - name: npm install (api-starter-kit)
+  - name: NPM Install (api-starter-kit)
     npm: path=/home/{{ansible_user_id}}/starter-kit
     sudo: no
 
@@ -122,6 +122,14 @@
     args:
       executable: /bin/bash
     changed_when: false
+
+  - name: Set server to restart on machine startup
+    shell: PATH=$PATH:/usr/local/bin && sudo pm2 startup ubuntu -u vagrant
+    args:
+      executable: /bin/bash
+
+  - name: Save PM2 process list
+    shell: pm2 save
 
   handlers:
     - name: restart nginx
