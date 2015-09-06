@@ -61,6 +61,10 @@ deploy:
           terraform --version
           ansible --version
 
+    - add-to-known_hosts:
+        hostname: github.com
+        fingerprint: a3:3a:f3:13:f4:9c:33:ed:21:2a:ef:46:aa:fd:f3:c8
+
     - add-ssh-key:
       keyname: GITHUB_PUSH_KEY
 
