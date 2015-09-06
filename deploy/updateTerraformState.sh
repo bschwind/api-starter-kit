@@ -22,5 +22,5 @@ else
 
     # Show last 3 commits
     git log -n 3
-    sudo git push -v git@github.com:bschwind/api-starter-kit.git HEAD:$WERCKER_GIT_BRANCH
+    git push -v origin HEAD:$WERCKER_GIT_BRANCH
 fi
