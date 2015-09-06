@@ -14,15 +14,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.name = "starter_kit_vm"
   end
 
-  # Install Ansible and from there, use it to provision
-  config.vm.provision "shell" do |s|
-    s.inline = "apt-get -y install software-properties-common"
-    s.inline = "apt-add-repository ppa:ansible/ansible"
-    s.inline = "apt-get update"
-    s.inline = "apt-get install -y software-properties-common"
-    s.inline = "apt-get install -y ansible"
-  end
-
   config.vm.provision "ansible" do |ansible|
     ansible.extra_vars = {
       deploy_env: "local"

@@ -3,7 +3,7 @@
 var statusControler = {};
 
 statusControler.ping = function (req, res) {
-	res.send("HOW NEAT IS THAT");
+	res.send("PONG");
 };
 
 module.exports = statusControler;
