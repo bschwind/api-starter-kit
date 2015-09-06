@@ -61,6 +61,9 @@ deploy:
           terraform --version
           ansible --version
 
+    - add-ssh-key:
+      keyname: GITHUB_PUSH_KEY
+
     - script:
         name: Show git remotes
         code: |
