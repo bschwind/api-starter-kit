@@ -124,7 +124,7 @@
     changed_when: false
 
   - name: Set server to restart on machine startup
-    shell: PATH=$PATH:/usr/local/bin && sudo pm2 startup ubuntu -u vagrant
+    shell: PATH=$PATH:/usr/local/bin && sudo pm2 startup ubuntu -u {{ansible_user_id}}
     args:
       executable: /bin/bash
 
