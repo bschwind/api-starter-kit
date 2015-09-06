@@ -103,7 +103,7 @@ deploy:
         name: run ansible
         code: |
           chmod 400 $PRIVATEKEY_PATH
-          ansible-playbook provision.yml \
+          ansible-playbook deploy/ansible/provision.yml \
             --user=ubuntu \
             --private-key=$PRIVATEKEY_PATH \
             --vault-password-file=deploy/ansible/ansible-vault-password.py \

@@ -29,6 +29,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     }
 
     ansible.vault_password_file = "deploy/ansible/ansible-vault-password.py"
-    ansible.playbook = "provision.yml"
+    ansible.playbook = "deploy/ansible/provision.yml"
   end
 end

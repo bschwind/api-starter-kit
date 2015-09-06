@@ -1,8 +1,8 @@
 - hosts: all
   vars_files:
-  - "deploy/ansible/common/non-secrets.yml"
-  - "deploy/ansible/{{deploy_env}}/secrets.yml"
-  - "deploy/ansible/{{deploy_env}}/non-secrets.yml"
+  - "vars/common/non-secrets.yml"
+  - "vars/{{deploy_env}}/secrets.yml"
+  - "vars/{{deploy_env}}/non-secrets.yml"
 
   tasks:
 
@@ -103,7 +103,7 @@
 
   - name: Copy over nginx-config
     sudo: yes
-    template: dest=/etc/nginx/sites-enabled src=config/nginx-config group=root owner=root mode=644
+    template: dest=/etc/nginx/sites-enabled src=../files/nginx-config group=root owner=root mode=644
     notify: restart nginx
 
   - name: Check list of running Node.js apps
