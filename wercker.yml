@@ -40,6 +40,10 @@ deploy:
     - script:
         name: Install Ansible and Terraform
         code: |
+          # Needed for a later version of ansible
+          sudo apt-get install software-properties-common
+          sudo apt-add-repository ppa:ansible/ansible
+
           sudo apt-get update
           sudo apt-get install -y ansible
           sudo apt-get install -y git
@@ -98,7 +102,6 @@ deploy:
     - script:
         name: run ansible
         code: |
-          echo $DEPLOY_ENV
           chmod 400 $PRIVATEKEY_PATH
           ansible-playbook provision.yml \
             --user=ubuntu \
