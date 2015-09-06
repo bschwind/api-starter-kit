@@ -1,6 +1,5 @@
 - hosts: all
   vars_files:
-  - "deploy/ansible/common/secrets.yml"
   - "deploy/ansible/common/non-secrets.yml"
   - "deploy/ansible/{{deploy_env}}/secrets.yml"
   - "deploy/ansible/{{deploy_env}}/non-secrets.yml"
@@ -9,9 +8,8 @@
 
   - name: Add environment variables for secrets
     sudo: yes
-    blockinfile:
-      dest: /home/{{ansible_user_id}}/.bashrc
-      insertafter: "EOF"
+    copy:
+      dest: /home/{{ansible_user_id}}/.env_vars.sh
       content: |
         export AWS_ACCESS_KEY={{aws_access_key}}
         export AWS_SECRET_KEY={{aws_secret_key}}
@@ -19,6 +17,14 @@
         export DB_USER={{db_user}}
         export DB_PASSWORD={{db_password}}
         export AWS_S3_BUCKET={{aws_s3_bucket}}
+
+  - name: Include environment variables in .bashrc
+    sudo: yes
+    blockinfile:
+      dest: /home/{{ansible_user_id}}/.bashrc
+      insertafter: "EOF"
+      content: |
+        . ~/.env_vars.sh
 
   - name: Upgrade packages
     sudo: yes
@@ -48,6 +54,10 @@
   - name: Install NPM
     sudo: yes
     apt: name=npm
+
+  - name: Install pm2 (to run Node.js apps)
+    npm: name=pm2 global=yes
+    sudo: yes
 
   - name: git clone api-starter-kit
     git:
@@ -95,6 +105,17 @@
     sudo: yes
     template: dest=/etc/nginx/sites-enabled src=config/nginx-config group=root owner=root mode=644
     notify: restart nginx
+
+  - name: Check list of running Node.js apps
+    command: pm2 list
+    register: pm2_list
+    changed_when: false
+
+  - name: start API ver2.0 server
+    shell: "cd /home/{{ansible_user_id}}/starter-kit/ && source /home/{{ansible_user_id}}/.env_vars.sh && pm2 start app.js --name api-starter-kit-server"
+    when: "pm2_list.stdout.find('api-starter-kit-server') == -1"
+    args:
+      executable: /bin/bash
 
   handlers:
     - name: restart nginx
