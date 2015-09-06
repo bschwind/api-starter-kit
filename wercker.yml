@@ -65,6 +65,11 @@ deploy:
       keyname: GITHUB_DEPLOY_KEY
 
     - script:
+        name: Show git remotes
+        code: |
+          git remote -v
+
+    - script:
         name: Run Terraform
         code: |
           terraform apply \
