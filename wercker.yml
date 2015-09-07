@@ -42,7 +42,7 @@ deploy:
     - add-to-known_hosts:
         hostname: github.com
 
-    - script
+    - script:
         name: Print some stuff
         code: |
           whoami
