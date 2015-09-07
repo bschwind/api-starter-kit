@@ -13,7 +13,7 @@ export GITHUB_PUSH_KEY_PATH=`mktemp`
 privateKey=$(eval echo "\$${GITHUB_PUSH_KEY}_PRIVATE")
 echo -e "$privateKey" > $GITHUB_PUSH_KEY_PATH
 chmod 400 $GITHUB_PUSH_KEY_PATH
-eval `ssh-agent -s`
+# eval `ssh-agent -s`
 # ssh-add $GITHUB_PUSH_KEY_PATH
 
 echo "configured git"
