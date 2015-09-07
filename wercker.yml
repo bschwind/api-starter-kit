@@ -38,19 +38,6 @@ build:
 deploy:
   steps:
     - script:
-        name: Print some stuff
-        code: |
-          whoami
-          pwd
-          ls ~
-          ls ~/.ssh
-          cat ~/.ssh/config
-          cat ~/.ssh/known_hosts
-          echo "root stuff"
-          ls /root/.ssh/
-          cat /root/.ssh/config
-
-    - script:
         name: Install Ansible and Terraform
         code: |
           # Needed for a later version of ansible
