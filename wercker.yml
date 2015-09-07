@@ -37,6 +37,9 @@ build:
 
 deploy:
   steps:
+    - add-ssh-key:
+        keyname: GITHUB_PUSH_KEY
+
     - script:
         name: Install Ansible and Terraform
         code: |
@@ -61,13 +64,10 @@ deploy:
           terraform --version
           ansible --version
 
-    - add-to-known_hosts:
-        hostname: github.com
-        # fingerprint: 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48
+    # - add-to-known_hosts:
+    #     hostname: github.com
+    #     # fingerprint: 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48
         # TODO - try fingerprint after everything else works
-
-    # - add-ssh-key:
-    #   keyname: GITHUB_PUSH_KEY
 
     - script:
         name: Show git remotes
