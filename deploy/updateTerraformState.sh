@@ -9,11 +9,11 @@ fi
 git config --global user.email pleasemailus@wercker.com
 git config --global user.name "wercker"
 
-# export GITHUB_PUSH_KEY_PATH=`mktemp`
-# privateKey=$(eval echo "\$${GITHUB_PUSH_KEY}_PRIVATE")
-# echo -e "$privateKey" > $GITHUB_PUSH_KEY_PATH
-# chmod 400 $GITHUB_PUSH_KEY_PATH
-# eval `ssh-agent -s`
+export GITHUB_PUSH_KEY_PATH=`mktemp`
+privateKey=$(eval echo "\$${GITHUB_PUSH_KEY}_PRIVATE")
+echo -e "$privateKey" > $GITHUB_PUSH_KEY_PATH
+chmod 400 $GITHUB_PUSH_KEY_PATH
+eval `ssh-agent -s`
 # ssh-add $GITHUB_PUSH_KEY_PATH
 
 echo "configured git"
@@ -23,7 +23,8 @@ if git diff --exit-code --quiet terraform.tfstate ; then
 else
     echo "terraform.tfstate changed - committing"
     env
-    git pull --ff-only origin $WERCKER_GIT_BRANCH
+    ssh-agent bash -c 'ssh-add $GITHUB_PUSH_KEY_PATH; git pull --ff-only git@github.com:bschwind/api-starter-kit.git $WERCKER_GIT_BRANCH'
+    # git pull --ff-only origin $WERCKER_GIT_BRANCH
     git add terraform.tfstate
     echo "Committing with message: Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY [ci skip]"
     git commit -m "Update terraform.tfstate - Deploy by $WERCKER_STARTED_BY [ci skip]"
