@@ -37,8 +37,24 @@ build:
 
 deploy:
   steps:
-    - add-ssh-key:
+    - wercker/add-ssh-key:
         keyname: GITHUB_PUSH_KEY
+    - add-to-known_hosts:
+        hostname: github.com
+
+    - script
+        name: Print some stuff
+        code: |
+          whoami
+          pwd
+          ls ~
+          ls ~/.ssh
+          cat ~/.ssh/config
+          cat ~/.ssh/known_hosts
+          echo "root stuff"
+          ls /root/.ssh/
+          cat /root/.ssh/config
+
 
     - script:
         name: Install Ansible and Terraform
