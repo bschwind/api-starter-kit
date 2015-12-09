@@ -1,0 +1,28 @@
+---
+# Responsible for setting up any packages needed for running a local database
+
+- name: Install PostgreSQL
+  sudo: yes
+  apt: pkg={{item}}
+  with_items:
+    - libpq-dev # Needed for postgresql_db ansible commands
+    - python-psycopg2 # Needed for postgresql_db ansible commands
+
+- name: Create database
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db: name={{db_name}}
+
+- name: Create user for database
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: db={{db_name}} name={{db_username}} password={{db_password}} priv=ALL
+
+- name: Ensure user does not have unnecessary privileges
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: name={{db_username}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+- name: Create PostgreSQL tables
+  sudo: yes
+  shell: cat /home/{{ansible_user_id}}/starter-kit/sql/create.sql | PGPASSWORD={{db_password}} psql -d {{db_name}} -U {{db_username}} -w -h localhost

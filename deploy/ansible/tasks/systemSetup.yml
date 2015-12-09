@@ -1,0 +1,78 @@
+---
+# Responsible for setting up general system stuff like SSH keys
+
+- name: Copy private key
+  copy:
+    src: "{{private_key_path}}"
+    dest: /home/{{ansible_user_id}}/.ssh/id_rsa
+    owner: "{{ansible_user_id}}"
+    group: vagrant
+    mode: "0600"
+  when: ansible_user_id == "vagrant"
+
+- name: Copy github deploy key
+  when: ansible_user_id != "vagrant"
+  copy:
+    dest: /home/{{ansible_user_id}}/.ssh/id_rsa
+    mode: "0600"
+    content: "{{github_private_key}}"
+
+- name: Add environment variables file
+  copy:
+    dest: /home/{{ansible_user_id}}/.env_vars.sh
+    content: |
+      export DEPLOY_ENV="{{deploy_env}}"
+      export AWS_KEY="{{aws_key}}"
+      export AWS_SECRET="{{aws_secret}}"
+      export BUCKET="{{bucket}}"
+      export DB_HOST="{{db_host}}"
+      export DB_NAME="{{db_name}}"
+      export DB_PASSWORD="{{db_password}}"
+      export DB_USERNAME="{{db_username}}"
+      export JWT_SECRET="{{jwt_secret}}"
+      export PGPASSWORD="{{db_password}}"
+
+- name: Include environment variables in .bashrc
+  blockinfile:
+    dest: /home/{{ansible_user_id}}/.bashrc
+    insertafter: "EOF"
+    content: |
+      . ~/.env_vars.sh
+
+- name: Add DB connection convenience script
+  template:
+    dest: /home/{{ansible_user_id}}
+    src: ../../files/connectToDB.sh
+    mode: "777"
+
+- name: Upgrade packages
+  sudo: yes
+  apt: update_cache=yes upgrade=yes
+
+- name: Install base software (git, nginx, ntp)
+  sudo: yes
+  apt: name={{item}}
+  with_items:
+    - git
+    - nginx
+    - ntp
+    - postgresql
+    - postgresql-contrib
+
+- name: Remove default nginx config
+  sudo: yes
+  file:
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent
+  notify: restart nginx
+
+- name: Copy over nginx-config
+  sudo: yes
+  template:
+    dest: /etc/nginx/sites-enabled
+    src: ../../files/nginx-config
+    group: root
+    owner: root
+    mode: "644"
+    force: yes
+  notify: restart nginx

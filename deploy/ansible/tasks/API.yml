@@ -1,0 +1,11 @@
+---
+# Responsible for setting up the API starter kit Go project
+
+- name: git clone api-starter-kit
+  sudo: no
+  ignore_errors: yes # When you are actively working on the project, this can fail
+  git:
+    repo: git@github.com:bschwind/api-starter-kit.git
+    dest: /home/{{ansible_user_id}}/starter-kit
+    accept_hostkey: true
+    update: yes

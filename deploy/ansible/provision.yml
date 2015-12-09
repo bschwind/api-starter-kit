@@ -1,137 +1,16 @@
 - hosts: all
   vars_files:
-  - "vars/common/non-secrets.yml"
-  - "vars/{{deploy_env}}/secrets.yml"
-  - "vars/{{deploy_env}}/non-secrets.yml"
+    - "vars/common/non-secrets.yml"
+    - "vars/{{deploy_env}}/secrets.yml"
+    - "vars/{{deploy_env}}/non-secrets.yml"
 
   tasks:
+    - include: tasks/systemSetup.yml
+    - include: tasks/installGo.yml
+    - include: tasks/localDatabase.yml
+    - include: tasks/API.yml
 
-  - name: Add environment variables for secrets
-    sudo: yes
-    copy:
-      dest: /home/{{ansible_user_id}}/.env_vars.sh
-      content: |
-        export AWS_ACCESS_KEY={{aws_access_key}}
-        export AWS_SECRET_KEY={{aws_secret_key}}
-        export DB_NAME={{db_name}}
-        export DB_USER={{db_user}}
-        export DB_PASSWORD={{db_password}}
-        export AWS_S3_BUCKET={{aws_s3_bucket}}
-
-  - name: Include environment variables in .bashrc
-    sudo: yes
-    blockinfile:
-      dest: /home/{{ansible_user_id}}/.bashrc
-      insertafter: "EOF"
-      content: |
-        . ~/.env_vars.sh
-
-  - name: Upgrade packages
-    sudo: yes
-    apt: update_cache=yes upgrade=yes
-
-  - name: Install git
-    sudo: yes
-    apt: name=git
-
-  - name: Install nginx
-    sudo: yes
-    apt: name=nginx
-
-  - name: Install PostgreSQL
-    sudo: yes
-    apt: pkg={{item}}
-    with_items:
-    - postgresql
-    - postgresql-contrib
-    - libpq-dev # Needed for postgresql_db ansible commands
-    - python-psycopg2 # Needed for postgresql_db ansible commands
-
-  - name: Install NodeJS
-    sudo: yes
-    apt: name=nodejs
-
-  - name: Install NPM
-    sudo: yes
-    apt: name=npm
-
-  - name: Install pm2 (to run Node.js apps)
-    npm: name=pm2 global=yes
-    sudo: yes
-
-  - name: Git clone api-starter-kit
-    git:
-      repo: https://github.com/bschwind/api-starter-kit.git
-      dest: /home/{{ansible_user_id}}/starter-kit
-      accept_hostkey: true
-    sudo: no
-    when: ansible_user_id != "vagrant" # Don't clone in a dev environment
-
-  - name: Create database
-    sudo: yes
-    sudo_user: postgres
-    postgresql_db: name={{db_name}}
-
-  - name: Create user for database
-    sudo: yes
-    sudo_user: postgres
-    postgresql_user: db={{db_name}} name={{db_user}} password={{db_password}} priv=ALL
-
-  - name: Ensure user does not have unnecessary privileges
-    sudo: yes
-    sudo_user: postgres
-    postgresql_user: name={{db_user}} role_attr_flags=NOSUPERUSER,NOCREATEDB
-
-  - name: Create PostgreSQL tables
-    sudo: yes
-    shell: cat /home/{{ansible_user_id}}/starter-kit/sql/create.sql | PGPASSWORD={{db_password}} psql -d {{db_name}} -U {{db_user}} -w -h localhost
-
-  - name: Make symlink to node
-    sudo: yes
-    file: path=/usr/bin/node src=/usr/bin/nodejs state=link
-
-  - name: NPM Install (api-starter-kit)
-    npm: path=/home/{{ansible_user_id}}/starter-kit
-    sudo: no
-
-  - name: Remove default nginx config
-    sudo: yes
-    file:
-      path: "/etc/nginx/sites-enabled/default"
-      state: absent
-    notify: restart nginx
-
-  - name: Copy over nginx-config
-    sudo: yes
-    template: dest=/etc/nginx/sites-enabled src=../files/nginx-config group=root owner=root mode=644
-    notify: restart nginx
-
-  - name: Check list of running Node.js apps
-    command: pm2 list
-    register: pm2_list
-    changed_when: false
-
-  - name: Start API server if not already running
-    shell: "cd /home/{{ansible_user_id}}/starter-kit/ && source /home/{{ansible_user_id}}/.env_vars.sh && pm2 start app.js --name api-starter-kit-server"
-    when: "pm2_list.stdout.find('api-starter-kit-server') == -1"
-    args:
-      executable: /bin/bash
-
-  - name: Reload API server
-    shell: "cd /home/{{ansible_user_id}}/starter-kit/ && source /home/{{ansible_user_id}}/.env_vars.sh && pm2 start api-starter-kit-server"
-    args:
-      executable: /bin/bash
-    changed_when: false
-
-  - name: Set server to restart on machine startup
-    shell: PATH=$PATH:/usr/local/bin && sudo pm2 startup ubuntu -u {{ansible_user_id}}
-    args:
-      executable: /bin/bash
-
-  - name: Save PM2 process list
-    shell: pm2 save
+    # - include: tasks/serverStartup.yml
 
   handlers:
-    - name: restart nginx
-      sudo: yes
-      command: nginx -s reload
+    - include: handlers/nginx.yml
