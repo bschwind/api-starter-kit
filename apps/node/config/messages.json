@@ -1,0 +1,22 @@
+{
+	"1": {
+		"en": "Invalid Data",
+		"httpCode": 400
+	},
+	"2": {
+		"en": "Passwords do not match",
+		"httpCode": 400
+	},
+	"3": {
+		"en": "Username already taken",
+		"httpCode": 400
+	},
+	"4": {
+		"en": "Sucessful registration",
+		"httpCode": 200
+	},
+	"500": {
+		"en": "Internal server error",
+		"httpCode": 500
+	}
+}
