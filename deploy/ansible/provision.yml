@@ -6,11 +6,15 @@
 
   tasks:
     - include: tasks/systemSetup.yml
+
+    - include: tasks/installNode.yml
+      when: app_language == "node"
+
     - include: tasks/installGo.yml
+      when: app_language == "go"
+
     - include: tasks/localDatabase.yml
     - include: tasks/API.yml
-
-    # - include: tasks/serverStartup.yml
 
   handlers:
     - include: handlers/nginx.yml

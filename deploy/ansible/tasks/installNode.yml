@@ -1,0 +1,47 @@
+---
+# Installs everything needed to run a Node app
+
+- name: Install NodeJS
+  sudo: yes
+  apt: name=nodejs
+
+- name: Install NPM
+  sudo: yes
+  apt: name=npm
+
+- name: Install pm2 (to run Node.js apps)
+  npm: name=pm2 global=yes
+  sudo: yes
+
+- name: Make symlink to node
+  sudo: yes
+  file: path=/usr/bin/node src=/usr/bin/nodejs state=link
+
+- name: NPM Install (api-starter-kit)
+  npm: path=/home/{{ansible_user_id}}/starter-kit/apps/node
+  sudo: no
+
+- name: Check list of running Node.js apps
+  command: pm2 list
+  register: pm2_list
+  changed_when: false
+
+- name: Start API server if not already running
+  shell: "cd /home/{{ansible_user_id}}/starter-kit/apps/node && source /home/{{ansible_user_id}}/.env_vars.sh && pm2 start app.js --name api-starter-kit-server"
+  when: "pm2_list.stdout.find('api-starter-kit-server') == -1"
+  args:
+    executable: /bin/bash
+
+- name: Reload API server
+  shell: "cd /home/{{ansible_user_id}}/starter-kit/apps/node/ && source /home/{{ansible_user_id}}/.env_vars.sh && pm2 start api-starter-kit-server"
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Set server to restart on machine startup
+  shell: PATH=$PATH:/usr/local/bin && sudo pm2 startup ubuntu -u {{ansible_user_id}}
+  args:
+    executable: /bin/bash
+
+- name: Save PM2 process list
+  shell: pm2 save

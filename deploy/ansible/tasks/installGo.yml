@@ -36,3 +36,9 @@
     content: |
       export PATH=$PATH:/usr/local/go/bin
       export GOPATH=/home/{{ansible_user_id}}/gohome
+
+- name: Go Build
+  shell: "source /etc/profile && go build main.go"
+  args:
+    chdir: "/home/{{ansible_user_id}}/starter-kit/apps/go/src"
+    executable: /bin/bash
