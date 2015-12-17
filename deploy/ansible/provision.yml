@@ -13,6 +13,9 @@
     - include: tasks/installGo.yml
       when: app_language == "go"
 
+    - include: tasks/installRust.yml
+      when: app_language == "rust"
+
     - include: tasks/localDatabase.yml
     - include: tasks/API.yml
 

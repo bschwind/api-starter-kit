@@ -1,0 +1,17 @@
+---
+# Responsible for installing Rust
+
+- name: Check for Rust Installation
+  shell: which cargo
+  register: cargo_result
+
+- name: Install Rust
+  sudo: yes
+  shell: curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- -y
+  when: cargo_result.stdout.find('/usr/local/bin/cargo') == -1
+
+- name: Cargo Build
+  shell: cargo build
+  args:
+    chdir: "/home/{{ansible_user_id}}/starter-kit/apps/rust"
+    executable: /bin/bash

@@ -2,3 +2,4 @@
 node_modules/
 *.sublime-*
 apps/go/src/main
+apps/rust/target
