@@ -6,9 +6,9 @@ module.exports = {
 	},
 
 	postgres: {
-		host: "127.0.0.1",
+		host: process.env.DB_HOST,
 		db: process.env.DB_NAME,
-		user: process.env.DB_USER,
+		user: process.env.DB_USERNAME,
 		password: process.env.DB_PASSWORD
 	}
 };

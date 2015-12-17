@@ -1,0 +1,44 @@
+---
+# Responsible for installing Go
+
+- name: Download Go Tar
+  sudo: yes
+  get_url:
+    url: https://storage.googleapis.com/golang/go1.5.2.linux-amd64.tar.gz
+    dest: /usr/local/go1.5.2.tar.gz
+
+- name: Extract Go Tar
+  sudo: yes
+  unarchive:
+    copy: no # Don't copy from the host machine
+    src: /usr/local/go1.5.2.tar.gz
+    dest: /usr/local
+
+- name: Create /home/user/gohome
+  file:
+    path: /home/{{ansible_user_id}}/gohome
+    state: directory
+
+- name: Create /home/user/gohome/{src, bin, pkg}
+  file:
+    path: /home/{{ansible_user_id}}/gohome/{{item}}
+    state: directory
+  with_items:
+    - src
+    - bin
+    - pkg
+
+- name: Include go in PATH
+  sudo: yes
+  blockinfile:
+    dest: /etc/profile
+    insertafter: "EOF"
+    content: |
+      export PATH=$PATH:/usr/local/go/bin
+      export GOPATH=/home/{{ansible_user_id}}/gohome
+
+- name: Go Build
+  shell: "source /etc/profile && go build main.go"
+  args:
+    chdir: "/home/{{ansible_user_id}}/starter-kit/apps/go/src"
+    executable: /bin/bash

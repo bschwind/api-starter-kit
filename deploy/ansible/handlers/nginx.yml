@@ -1,0 +1,5 @@
+---
+# Responsible for restarting nginx
+- name: restart nginx
+  sudo: yes
+  command: nginx -s reload
