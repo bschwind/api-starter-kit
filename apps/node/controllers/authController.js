@@ -1,7 +1,6 @@
 "use strict";
 
 var Promise = require("bluebird");
-var config = require("config/config");
 var validation = require("services/validation");
 var bcrypt = require("bcrypt");
 var hashPromise = Promise.promisify(bcrypt.hash);

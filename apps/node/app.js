@@ -4,7 +4,6 @@
 require("app-module-path").addPath(__dirname);
 
 // Modules
-var config = require("config/config");
 var express = require("express");
 
 // Middlewares
