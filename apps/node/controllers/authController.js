@@ -21,7 +21,7 @@ authController.signup = function (req, res) {
 	validation.run(req, {
 		username: [validation.required, validation.minMaxLength(3, 20), validation.isAscii],
 		password: [validation.required, validation.minMaxLength(8, 4096)],
-		passwordVerify: [validation.required],
+		passwordVerify: [validation.required, validation.minMaxLength(8, 4096)],
 		email: [validation.isEmail]
 	})
 	.then(function (fields) {
@@ -30,10 +30,12 @@ authController.signup = function (req, res) {
 		}
 
 		return [
-			db("users").select("id")
+			db("users")
+			.select("id")
 			.where({
 				username: fields.username
-			}).limit(1),
+			})
+			.limit(1),
 			fields
 		];
 	})
@@ -45,11 +47,13 @@ authController.signup = function (req, res) {
 		return [hashPromise(fields.password, config.bcrypt.cost), fields];
 	})
 	.spread(function (hashedPassword, fields) {
-		return db("users").insert({
+		return db
+		.insert({
 			username: fields.username,
 			password: hashedPassword,
 			email: fields.email
-		});
+		})
+		.into("users");
 	})
 	.then(function () {
 		data.message_code = 4;
