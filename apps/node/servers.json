@@ -1,0 +1,7 @@
+{
+  "apps" : [{
+    "name"        : "api",
+    "script"      : "app.js",
+    "cwd"         : "/home/ubuntu/data/api/"
+  }]
+}
