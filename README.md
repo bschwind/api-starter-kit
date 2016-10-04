@@ -8,6 +8,7 @@ Dependencies
 ------------
 - VirtualBox
 - Vagrant
+- Docker
 
 Build
 -----
