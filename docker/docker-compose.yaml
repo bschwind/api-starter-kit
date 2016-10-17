@@ -1,5 +1,29 @@
+# Node Dockerfile
+# api:
+#   dockerfile: $PWD/../apps/node/docker/Dockerfile
+#   build: .
+#   links:
+#     - redis
+#     - pg
+#   ports:
+#     - "8888:8888"
+#   volumes:
+#     - $PWD/../apps/node:/home/ubuntu/data/api
+#   environment:
+#     - TERM=xterm # This is for allowing things like the 'clear' command to work in the terminal
+#     - REDIS_PORT=6379
+#     - REDIS_HOST=redis
+#     - DEPLOY_ENV=local
+#     - DB_HOST=pg
+#     - DB_NAME=api_starter_kit
+#     - DB_PORT=3306
+#     - DB_USERNAME=api_starter_kit_user
+#     - DB_PASSWORD=testPassword
+#     - JWT_SECRET=7177d1bb89b77ec15f5dabc716c412ef73f8036444b2091bff06e4f854b4ddd8
+
+# Clojure Dockerfile
 api:
-  dockerfile: $PWD/../apps/node/docker/Dockerfile
+  dockerfile: $PWD/../apps/clojure/docker/Dockerfile
   build: .
   links:
     - redis
@@ -7,7 +31,8 @@ api:
   ports:
     - "8888:8888"
   volumes:
-    - $PWD/../apps/node:/home/ubuntu/data/api
+    - $PWD/../apps/clojure:/home/ubuntu/data/api
+    - ~/.m2:/root/.m2
   environment:
     - TERM=xterm # This is for allowing things like the 'clear' command to work in the terminal
     - REDIS_PORT=6379
