@@ -1,0 +1,61 @@
+api:
+  dockerfile: $PWD/../apps/node/docker/Dockerfile
+  build: .
+  links:
+    - redis
+    - pg
+  ports:
+    - "8888:8888"
+  volumes:
+    - $PWD/../apps/node:/home/ubuntu/data/api
+  environment:
+    - TERM=xterm # This is for allowing things like the 'clear' command to work in the terminal
+    - REDIS_PORT=6379
+    - REDIS_HOST=redis
+    - DEPLOY_ENV=local
+    - DB_HOST=pg
+    - DB_NAME=api_starter_kit
+    - DB_PORT=3306
+    - DB_USERNAME=api_starter_kit_user
+    - DB_PASSWORD=testPassword
+    - JWT_SECRET=7177d1bb89b77ec15f5dabc716c412ef73f8036444b2091bff06e4f854b4ddd8
+
+nginx:
+  dockerfile: nginxDockerfile
+  build: .
+  ports:
+    - "80:80"
+  links:
+    - api
+
+redis:
+  image: redis
+  ports:
+    - "6379:6379"
+  volumes:
+    # This volume gets mapped to docker/redis, it stores the redis append-only file
+    - $PWD/redis:/data
+  user: "999:999"
+  # Using "--appendonly yes" means redis will write to a file in docker/redis/
+  # which will persist our data over container restarts
+  command: redis-server --appendonly yes
+
+pg:
+  dockerfile: docker/pgDockerfile
+  # The build context needs to be the parent directory
+  # so the Dockerfile can copy create.sql into the container
+  build: ..
+  ports:
+    - "5432:5432"
+  volumes:
+    # This volume gets mapped to docker/pg, it stores the database files
+    # so our data will survive across container restarts
+    - $PWD/pg:/var/lib/postgresql/data/pgdata
+
+    # This is a convenience volume
+    - $PWD/../sql:/sqlscripts
+  environment:
+    - PGDATA=/var/lib/postgresql/data/pgdata
+    - POSTGRES_DB=api_starter_kit
+    - POSTGRES_USER=api_starter_kit_user
+    - POSTGRES_PASSWORD=testPassword

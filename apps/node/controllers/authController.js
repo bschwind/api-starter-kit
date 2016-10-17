@@ -1,7 +1,6 @@
 "use strict";
 
 var Promise = require("bluebird");
-var config = require("config/config");
 var validation = require("services/validation");
 var bcrypt = require("bcrypt");
 var hashPromise = Promise.promisify(bcrypt.hash);
@@ -44,7 +43,9 @@ authController.signup = function (req, res) {
 			throw new UserAlreadyExistsError();
 		}
 
-		return [hashPromise(fields.password, config.bcrypt.cost), fields];
+		var bcryptCost = 12;
+
+		return [hashPromise(fields.password, bcryptCost), fields];
 	})
 	.spread(function (hashedPassword, fields) {
 		return db

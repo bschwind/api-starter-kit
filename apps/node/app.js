@@ -4,7 +4,6 @@
 require("app-module-path").addPath(__dirname);
 
 // Modules
-var config = require("config/config");
 var express = require("express");
 
 // Middlewares
@@ -32,6 +31,6 @@ app.post("/api/v1/auth/update", authController.update);
 
 // Start the server
 var server = app.listen(8888, function () {
-    console.log("Attache-node-api server started");
+    console.log("node-api server started");
     console.log("Listening on port %d", server.address().port);
 });
