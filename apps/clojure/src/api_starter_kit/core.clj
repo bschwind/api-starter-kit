@@ -14,6 +14,6 @@
 
 (defn -main [& args]
   (println "Listening on port 8888")
-  (run-server
-    (reload/wrap-reload
-      (handler/site #'simple-routes)) {:port 8888}))
+  (-> (handler/site #'simple-routes)
+      (reload/wrap-reload)
+      (run-server {:port 8888})))
