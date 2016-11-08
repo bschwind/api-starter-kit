@@ -1,0 +1,3 @@
+FROM postgres:9.5
+
+COPY sql/create.sql /docker-entrypoint-initdb.d/

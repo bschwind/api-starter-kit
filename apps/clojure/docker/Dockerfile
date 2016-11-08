@@ -1,10 +1,10 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 ENV LEIN_ROOT true
 
-# Install git, JDK7, and leiningen
+# Install git, JDK8, and leiningen
 RUN apt-get -qq update \
-    && apt-get install -y git openjdk-7-jre-headless curl \
+    && apt-get install -y git openjdk-8-jre curl \
     && curl -o /usr/bin/lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein \
     && chmod +x /usr/bin/lein \
     && lein \
