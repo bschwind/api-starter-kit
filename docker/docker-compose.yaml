@@ -16,7 +16,7 @@
 #     - DEPLOY_ENV=local
 #     - DB_HOST=pg
 #     - DB_NAME=api_starter_kit
-#     - DB_PORT=3306
+#     - DB_PORT=5432
 #     - DB_USERNAME=api_starter_kit_user
 #     - DB_PASSWORD=testPassword
 #     - JWT_SECRET=7177d1bb89b77ec15f5dabc716c412ef73f8036444b2091bff06e4f854b4ddd8
@@ -40,7 +40,7 @@ api:
     - DEPLOY_ENV=local
     - DB_HOST=pg
     - DB_NAME=api_starter_kit
-    - DB_PORT=3306
+    - DB_PORT=5432
     - DB_USERNAME=api_starter_kit_user
     - DB_PASSWORD=testPassword
     - JWT_SECRET=7177d1bb89b77ec15f5dabc716c412ef73f8036444b2091bff06e4f854b4ddd8
