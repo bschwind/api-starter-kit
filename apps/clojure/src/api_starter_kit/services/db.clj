@@ -1,7 +1,8 @@
 (ns api-starter-kit.services.db
-  (:require [hikari-cp.core :refer :all]
+  (:require [hikari-cp.core :as hikari]
             [clojure.java.jdbc :as jdbc]
-            [cheshire.core :refer [generate-string]]))
+            [cheshire.core :refer [generate-string]]
+            [hugsql.core :as hugsql]))
 
 (def db-host (System/getenv "DB_HOST"))
 (def db-name (System/getenv "DB_NAME"))
@@ -26,10 +27,13 @@
                          :port-number        db-port
                          :register-mbeans    false})
 
+; Queries
+(hugsql/def-db-fns "api_starter_kit/sql/auth.sql")
+
 ; defonce, otherwise you'll eventually run out of connections
 ; as reloading this source file will grab another 10 connections
 (defonce datasource
-  (make-datasource datasource-options))
+  (hikari/make-datasource datasource-options))
 
 (defn list-usernames []
   (jdbc/with-db-connection [conn {:datasource datasource}]
@@ -38,3 +42,7 @@
              (sort-by :updated_at <)
              (map :username)
              generate-string))))
+
+(defn find-user [username]
+  (jdbc/with-db-connection [conn {:datasource datasource}]
+      (find-user-by-username conn {:username username})))

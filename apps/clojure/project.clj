@@ -6,6 +6,7 @@
                  [org.slf4j/slf4j-nop "1.7.13"]
                  [hikari-cp "1.7.5"]
                  [http-kit "2.2.0"]
+                 [com.layerware/hugsql "0.4.7"]
                  [cheshire "5.6.3"]
                  [compojure "1.5.1"]
                  [javax.servlet/servlet-api "2.5"]
