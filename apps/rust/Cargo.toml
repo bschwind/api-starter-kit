@@ -1,7 +1,0 @@
-[package]
-name = "api-starter-kit"
-version = "0.1.0"
-
-[dependencies]
-iron = "*"
-router = "*"
